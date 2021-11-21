@@ -1,5 +1,13 @@
 local rout = {}
 
+local edge = { rising = 1, falling = 0, both = 2 }
+
+local lvl = function(s, i, x, y)
+    local x = s.p_('lvl', x, y)
+    -- come back later and understand or not understand ? :)
+    return (type(x) ~= 'table') and ((i > 0) and x or 0) or x[i + 1] or 15
+end
+
 rout.binary = {}
 
 rout.binary.input = {
@@ -122,12 +130,6 @@ rout.binary.change = {
     end
 }
 rout.binary.change.line_y = rout.binary.change.line_x
-
-local lvl = function(s, i, x, y)
-    local x = s.p_('lvl', x, y)
-    -- come back later and understand or not understand ? :)
-    return (type(x) ~= 'table') and ((i > 0) and x or 0) or x[i + 1] or 15
-end
 
 rout.binary.redraw = {
     point = function(s, g, v)
