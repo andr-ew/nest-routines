@@ -189,11 +189,9 @@ end
 
 rout.momentary = {}
 
---TODO: %s/_grid.binary.input.muxhandler/rout.binary.input/g
-
 rout.momentary.input = {
     point = function(s, x, y, z)
-        return _grid.binary.input.muxhandler.point(s, x, y, z)
+        return rout.binary.input.point(s, x, y, z)
     end,
     line = function(s, x, y, z)
         local max
@@ -202,7 +200,7 @@ rout.momentary.input = {
             min, max = fingers(s)
         end        
 
-        local v,t,last,add,rem,list = _grid.binary.input.muxhandler.line(s, x, y, z, min, max, wrap)
+        local v,t,last,add,rem,list = rout.binary.input.line(s, x, y, z, min, max, wrap)
         if v then
             return v,t,last,add,rem,list
         else
@@ -216,7 +214,7 @@ rout.momentary.input = {
             min, max = fingers(s)
         end        
 
-        local v,t,last,add,rem,list = _grid.binary.input.muxhandler.plane(s, x, y, z, min, max, wrap)
+        local v,t,last,add,rem,list = rout.binary.input.plane(s, x, y, z, min, max, wrap)
         if v then
             return v,t,last,add,rem,list
         else
@@ -291,7 +289,7 @@ rout.toggle = {}
 
 rout.toggle.input = {
     point = function(s, x, y, z)
-        local held = _grid.binary.input.muxhandler.point(s, x, y, z)
+        local held = rout.binary.input.point(s, x, y, z)
         local e = edge[s.p_.edge]
 
         if e == held or (held == 1 and e == 2) then
@@ -303,7 +301,7 @@ rout.toggle.input = {
         end
     end,
     line = function(s, x, y, z)
-        local held, theld, _, hadd, hrem, hlist = _grid.binary.input.muxhandler.line(s, x, y, z, 0, nil)
+        local held, theld, _, hadd, hrem, hlist = rout.binary.input.line(s, x, y, z, 0, nil)
         local min, max = count(s)
         local i
         local add
@@ -416,7 +414,7 @@ rout.toggle.input = {
     end,
     --TODO: copy over changes in line
     plane = function(s, x, y, z)
-        local held, theld, _, hadd, hrem, hlist = _grid.binary.input.muxhandler.plane(s, x, y, z, 0, nil)
+        local held, theld, _, hadd, hrem, hlist = rout.binary.input.plane(s, x, y, z, 0, nil)
         local min, max = count(s)
         local i
         local add
@@ -496,7 +494,7 @@ rout.trigger = {}
 
 rout.trigger.input = {
     point = function(s, x, y, z)
-        local held = _grid.binary.input.muxhandler.point(s, x, y, z)
+        local held = rout.binary.input.point(s, x, y, z)
         local e = edge[s.p_.edge]
         
         if e == held then
@@ -505,7 +503,7 @@ rout.trigger.input = {
     end,
     line = function(s, x, y, z)
         local min, max = count(s)
-        local held, theld, _, hadd, hrem, hlist = _grid.binary.input.muxhandler.line(s, x, y, z, 0, nil)
+        local held, theld, _, hadd, hrem, hlist = rout.binary.input.line(s, x, y, z, 0, nil)
         local ret = false
         local lret, add
         local e = edge[s.p_.edge]
@@ -593,7 +591,7 @@ rout.trigger.input = {
         if s.fingers then
             min, max = fingers(s)
         end        
-        local held, theld, _, hadd, hrem, hlist = _grid.binary.input.muxhandler.plane(s, x, y, z, 0, nil)
+        local held, theld, _, hadd, hrem, hlist = rout.binary.input.plane(s, x, y, z, 0, nil)
         local ret = false
         local lret, add
         local e = edge[s.p_.edge]
@@ -875,10 +873,10 @@ rout.control = {}
 
 rout.control.input = {
     point = function(s, x, y, z) 
-        return _grid.number.input.muxhandler.point(s, x, y, z)
+        return rout.number.input.point(s, x, y, z)
     end,
     line = function(s, x, y, z) 
-        local v,t,d = _grid.number.input.muxhandler.line(s, x, y, z)
+        local v,t,d = rout.number.input.line(s, x, y, z)
         if v then
             local r = type(s.x) == 'table' and s.x or s.y
             local vv = (v - s.p_.controlspec.minval) / (r[2] - r[1])
@@ -890,7 +888,7 @@ rout.control.input = {
         end
     end,
     plane = function(s, x, y, z) 
-        local v,t,d = _grid.number.input.muxhandler.plane(s, x, y, z)
+        local v,t,d = rout.number.input.plane(s, x, y, z)
         if v then
             local ret = false
             for _,k in ipairs { 'x', 'y' } do
