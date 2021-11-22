@@ -689,7 +689,6 @@ rout.trigger.change = {
                         lvl(s, function(l)
                             s.lvl_frame[x][y] = l
                             d.dirty = true
-                            print('lfunc', l, nest.dirty.grid)
                         end)
                                 
                         s.p_.v[x][y] = 0
