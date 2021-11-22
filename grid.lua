@@ -881,7 +881,7 @@ rout.control.input = {
     line = function(s, x, y, z) 
         local v,t,d = rout.number.input.line(s, x, y, z)
         if v then
-            local r = type(s.x) == 'table' and s.x or s.y
+            local r = type(s.p_.x) == 'table' and s.p_.x or s.p_.y
             local vv = (v - s.p_.controlspec.minval) / (r[2] - r[1])
 
             local c = s.p_.controlspec:map(vv)
