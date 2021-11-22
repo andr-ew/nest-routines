@@ -224,6 +224,7 @@ rout.momentary.input = {
 }
 
 rout.momentary.redraw = rout.binary.redraw
+rout.momentary.change = rout.binary.change
 
 local function toggle(s, value, lvl, range, include)
     local function delta(vvv)
@@ -489,6 +490,7 @@ rout.toggle.input = {
 }
 
 rout.toggle.redraw = rout.binary.redraw
+rout.toggle.change = rout.binary.change
 
 rout.trigger = {}
 
@@ -639,7 +641,7 @@ rout.trigger.input = {
     end
 }
 
-rout.trigger.redraw = {
+rout.trigger.change = {
     point = function(s, v) 
         local lvl = lvl(s, v)
         local d = s.devs.g
@@ -687,6 +689,7 @@ rout.trigger.redraw = {
                         lvl(s, function(l)
                             s.lvl_frame[x][y] = l
                             d.dirty = true
+                            print('lfunc', l, nest.dirty.grid)
                         end)
                                 
                         s.p_.v[x][y] = 0
@@ -696,6 +699,7 @@ rout.trigger.redraw = {
         end
     end
 }
+rout.trigger.redraw = rout.binary.redraw
 
 rout.fill = {}
 rout.fill.redraw = rout.binary.redraw
