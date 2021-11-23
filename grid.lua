@@ -1,5 +1,7 @@
 local rout = {}
 
+local _obj_ = _obj_ or setmetatable({}, { __call = function(_, o) return o end })
+
 local edge = { rising = 1, falling = 0, both = 2 }
 
 local lvl = function(s, i, x, y)
