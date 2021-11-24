@@ -1083,4 +1083,13 @@ rout.range.redraw = {
     end
 }
 
+for k,v in pairs(rout) do
+    for kk, vv in pairs(v) do
+        if vv.line then
+            vv.line_x = vv.line
+            vv.line_y = vv.line
+        end
+    end
+end
+
 return rout
