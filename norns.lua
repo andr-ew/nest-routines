@@ -1,4 +1,13 @@
-local enc = {}, key = {}
+local enc = {}
+local key = {}
+
+local function minit(n)
+    if type(n) == 'table' then
+        local ret = {}
+        for i = 1, #n do ret[i] = 0 end
+        return ret
+    else return 0 end
+end
 
 enc.delta = {
     input = {
@@ -167,6 +176,8 @@ enc.option = {
         end
     }
 }
+
+local edge = { rising = 1, falling = 0, both = 2 }
 
 key.number = {
     input = {
