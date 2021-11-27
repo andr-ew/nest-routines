@@ -100,7 +100,7 @@ local tab = require 'tabutil'
 
 local function delta_option_point(self, value, d, wrap_scoot)
     local i = value or 0
-    local v = i + d
+    local v = i + ((d > 0 and 1 or -1)*(self.p_.sens or 1))
     local size = #self.p_.options + 1 - (self.p_.sens or 1)
 
     if self.wrap then
@@ -123,8 +123,8 @@ local function delta_option_line(self, value, dx, dy, wrap_scoot)
     local j = value.y
     local sizey = #self.p_.options + 1 - self.p_.sens
 
-    vx = i + (dx or 0)
-    vy = j + (dy or 0)
+    vx = i + ((dx > 0 and 1 or -1)*(self.p_.sens or 1))
+    vy = j + ((dy > 0 and 1 or -1)*(self.p_.sens or 1))
 
     if self.wrap then
         while vy > sizey do
