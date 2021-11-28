@@ -91,7 +91,7 @@ rout.fill = {
 rout.number = {
     input = {
         point = function(self, n, d)
-            local value = self.p_.value
+            local value = self.p_.v
             local range = { self.p_.min, self.p_.max }
 
             local v = value + (d * self.p_.inc)
@@ -191,7 +191,7 @@ rout.control = {
 rout.option = {
     input = {
         point = function(self, n, d)
-            local v = self.p_.value + d
+            local v = self.p_.v + d
             local range = { self.p_.min, self.p_.max + 1 - self.p_.sens }
             local include = self.p_.include
 
@@ -214,7 +214,7 @@ rout.option = {
             end
 
             local c = util.clamp(v,range[1],range[2])
-            if self.p_.value ~= c then
+            if self.p_.v ~= c then
                 return c, math.floor(c)
             end
         end
