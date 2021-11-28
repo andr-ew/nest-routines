@@ -1,5 +1,4 @@
-local enc = {}
-local key = {}
+local rout = { key = {}, enc = {} }
 
 local function minit(n)
     if type(n) == 'table' then
@@ -9,7 +8,7 @@ local function minit(n)
     else return 0 end
 end
 
-enc.delta = {
+rout.enc.delta = {
     input = {
         point = function(s, n, d) 
             return d
@@ -24,7 +23,7 @@ enc.delta = {
 local function delta_number(self, value, d)
     local range = { self.p_.min, self.p_.max }
 
-    local v = value + (d * self.inc)
+    local v = value + (d * self.p_.inc)
 
     if self.p_.wrap then
         while v > range[2] do
@@ -41,14 +40,14 @@ local function delta_number(self, value, d)
     end
 end
 
-enc.number = {
+rout.enc.number = {
     input = {
         point = function(s, n, d) 
-            return delta_number(s, s.p_.v, d), d * s.inc
+            return delta_number(s, s.p_.v, d), d * s.p_.inc
         end,
         line = function(s, n, d) 
             local i = tab.key(s.p_.n, n)
-            local v = delta_number(s, s.p_.v[i], d * s.inc)
+            local v = delta_number(s, s.p_.v[i], d * s.p_.inc)
             if v then
                 local del = minit(s.p_.n)
                 del[i] = d
@@ -77,7 +76,7 @@ local function delta_control(self, v, d)
     end
 end
 
-enc.control = {
+rout.enc.control = {
     input = {
         point = function(s, n, d) 
             local last = s.p_.v
@@ -101,8 +100,8 @@ local tab = require 'tabutil'
 
 local function delta_option_point(self, value, d, wrap_scoot)
     local i = value or 0
-    local v = i + d
-    local size = #self.p_.options + 1 - self.p_.sens
+    local v = i + ((d > 0 and 1 or -1)*(self.p_.sens or 1))
+    local size = #self.p_.options + 1 - (self.p_.sens or 1)
 
     if self.wrap then
         while v > size do
@@ -124,8 +123,8 @@ local function delta_option_line(self, value, dx, dy, wrap_scoot)
     local j = value.y
     local sizey = #self.p_.options + 1 - self.p_.sens
 
-    vx = i + (dx or 0)
-    vy = j + (dy or 0)
+    vx = i + ((dx > 0 and 1 or -1)*(self.p_.sens or 1))
+    vy = j + ((dy > 0 and 1 or -1)*(self.p_.sens or 1))
 
     if self.wrap then
         while vy > sizey do
@@ -157,7 +156,7 @@ local function delta_option_line(self, value, dx, dy, wrap_scoot)
     end
 end
 
-enc.option = {
+rout.enc.option = {
     input = {
         point = function(s, n, d) 
             local v = delta_option_point(s, s.p_.v, d, true)
@@ -179,19 +178,19 @@ enc.option = {
 
 local edge = { rising = 1, falling = 0, both = 2 }
 
-key.number = {
+rout.key.number = {
     input = {
         point = function(s, n, z) 
             if z == edge[s.p_.edge] then
-                s.wrap = true
-                return delta_number(s, s.p_.v, s.inc), util.time() - s.tdown, s.inc
+                s.p_.wrap = true
+                return delta_number(s, s.p_.v, s.p_.inc), util.time() - s.tdown, s.p_.inc
             else s.tdown = util.time()
             end
         end,
         line = function(s, n, z) 
             if z == edge[s.p_.edge] then
                 local i = tab.key(s.p_.n, n)
-                local d = i == 2 and s.inc or -s.inc
+                local d = i == 2 and s.p_.inc or -s.p_.inc
                 return delta_number(s, s.p_.v, d), util.time() - s.tdown, d
             else s.tdown = util.time()
             end
@@ -199,20 +198,20 @@ key.number = {
     }
 }
 
-key.option = {
+rout.key.option = {
     input = {
         point = function(s, n, z) 
             if z == edge[s.p_.edge] then 
                 s.wrap = true
-                local v = delta_option_point(s, s.p_.v, s.inc)
-                return v, s.p_.options[v], util.time() - s.tdown, s.inc
+                local v = delta_option_point(s, s.p_.v, s.p_.inc)
+                return v, s.p_.options[v], util.time() - s.tdown, s.p_.inc
             else s.tdown = util.time()
             end
         end,
         line = function(s, n, z) 
             if z == edge[s.p_.edge] then 
                 local i = tab.key(s.p_.n, n)
-                local d = i == 2 and s.inc or -s.inc
+                local d = i == 2 and s.p_.inc or -s.p_.inc
                 local v = delta_option_point(s, s.p_.v, d)
                 return v, s.p_.options[v], util.time() - s.tdown, d
             else s.tdown = util.time()
@@ -221,7 +220,7 @@ key.option = {
     }
 }
 
-key.binary = {
+rout.key.binary = {
     input = {
         point = function(s, n, z, min, max, wrap)
             if z > 0 then 
@@ -281,10 +280,10 @@ local function fingers(s)
     return min, max
 end
 
-key.momentary = {
+rout.key.momentary = {
     input = {
         point = function(s, n, z)
-            return key.binary.input.point(s, n, z)
+            return rout.key.binary.input.point(s, n, z)
         end,
         line = function(s, n, z)
             local max
@@ -293,7 +292,7 @@ key.momentary = {
                 min, max = fingers(s)
             end        
 
-            local v,t,last,add,rem,list = key.binary.input.line(s, n, z, min, max, wrap)
+            local v,t,last,add,rem,list = rout.key.binary.input.line(s, n, z, min, max, wrap)
             if v then
                 return v,t,last,add,rem,list
             else
@@ -307,17 +306,17 @@ local function toggle(s, v)
     return (v + 1) % (((type(s.p_.lvl) == 'table') and #s.p_.lvl > 1) and (#s.p_.lvl) or 2)
 end
 
-key.toggle = {
+rout.key.toggle = {
     input = {
         point = function(s, n, z)
-            local held = key.binary.input.point(s, n, z)
+            local held = rout.key.binary.input.point(s, n, z)
 
             if edge[s.p_.edge] == held then
                 return toggle(s, s.p_.v), s.theld, util.time() - s.tlast 
             end
         end,
         line = function(s, n, z)
-            local held, theld, _, hadd, hrem, hlist = key.binary.input.line(s, n, z, 0, nil)
+            local held, theld, _, hadd, hrem, hlist = rout.key.binary.input.line(s, n, z, 0, nil)
             local min, max = count(s)
             local i
             local add
@@ -365,10 +364,10 @@ key.toggle = {
     }
 }
 
-key.trigger = {
+rout.key.trigger = {
     input = {
         point = function(s, n, z)
-            local held = key.binary.input.point(s, n, z)
+            local held = rout.key.binary.input.point(s, n, z)
             
             if edge[s.p_.edge] == held then
                 return 1, s.theld, util.time() - s.tlast
@@ -381,7 +380,7 @@ key.trigger = {
             if s.fingers then
                 min, max = fingers(s)
             end        
-            local held, theld, _, hadd, hrem, hlist = key.binary.input.line(s, n, z, 0, nil)
+            local held, theld, _, hadd, hrem, hlist = rout.key.binary.input.line(s, n, z, 0, nil)
             local ret = false
             local lret, add
 
@@ -428,4 +427,4 @@ key.trigger = {
     }
 }
 
-return { enc = enc, key = key }
+return rout
