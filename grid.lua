@@ -134,27 +134,27 @@ rout.binary.change = {
 rout.binary.change.line_y = rout.binary.change.line_x
 
 rout.binary.redraw = {
-    point = function(s, g, v)
+    point = function(s, v, g)
         local lvl = lvl(s, v)
 
         if type(lvl) == 'function' then lvl = s.lvl_frame end
         if lvl > 0 then g:led(s.p_.x, s.p_.y, lvl) end
     end,
-    line_x = function(s, g, v)
+    line_x = function(s, v, g)
         for x,l in ipairs(v) do 
             local lvl = lvl(s, l, x)
             if type(lvl) == 'function' then lvl = s.lvl_frame[x] end
             if lvl > 0 then g:led(x + s.p_.x[1] - 1, s.p_.y, lvl) end
         end
     end,
-    line_y = function(s, g, v)
+    line_y = function(s, v, g)
         for y,l in ipairs(v) do 
             local lvl = lvl(s, l, y)
             if type(lvl) == 'function' then lvl = s.lvl_frame[y] end
             if lvl > 0 then g:led(s.p_.x, s.p_.y[2] - y + 1, lvl) end
         end
     end,
-    plane = function(s, g, v)
+    plane = function(s, v, g)
         for x,r in ipairs(v) do 
             for y,l in ipairs(r) do 
                 local lvl = lvl(s, l, x, y)
@@ -839,11 +839,11 @@ rout.number.input = {
 }
 
 rout.number.redraw = {
-    point = function(s, g, v)
+    point = function(s, v, g)
         local lvl = lvl(s, 1)
         if lvl > 0 then g:led(s.p_.x, s.p_.y, lvl) end
     end,
-    line_x = function(s, g, v)
+    line_x = function(s, v, g)
         for i = 1, s.p_.x[2] - s.p_.x[1] + 1 do
             local lvl = lvl(s, s.p_.v - s.p_.min + 1 == i and 1 or 0, i)
             local x,y,w = i, 1, s.p_.wrap
@@ -855,13 +855,13 @@ rout.number.redraw = {
         end
     end,
     --TODO: wrap
-    line_y = function(s, g, v)
+    line_y = function(s, v, g)
         for i = 1, s.p_.y[2] - s.p_.y[1] + 1 do
             local lvl = lvl(s, (s.p_.v - s.p_.min + 1 == i) and 1 or 0, i)
             if lvl > 0 then g:led(s.p_.x, s.p_.y[2] - i + 1, lvl) end
         end
     end,
-    plane = function(s, g, v)
+    plane = function(s, v, g)
         local m = ((s.p_.controlspec and s.p_.controlspec.minval) or s.p_.min or 1) - 1
         m = type(m) ~= 'table' and { m, m } or m
         for i = s.p_.x[1], s.p_.x[2] do
@@ -913,11 +913,11 @@ rout.control.input = {
 }
 
 rout.control.redraw = {
-    point = function(s, g, v)
+    point = function(s, v, g)
         local lvl = lvl(s, 1)
         if lvl > 0 then g:led(s.p_.x, s.p_.y, lvl) end
     end,
-    line_x = function(s, g, v)
+    line_x = function(s, v, g)
         for i = s.p_.x[1], s.p_.x[2] do
             local l = lvl(s, 0)
             local vv = (i - s.p_.x[1]) / (s.p_.x[2] - s.p_.x[1])
@@ -928,7 +928,7 @@ rout.control.redraw = {
             if l > 0 then g:led(i, s.p_.y, l) end
         end
     end,
-    line_y = function(s, g, v)
+    line_y = function(s, v, g)
         for i = s.p_.y[1], s.p_.y[2] do
             local l = lvl(s, 0)
             local vv = (i - s.p_.y[1]) / (s.p_.y[2] - s.p_.y[1])
@@ -939,7 +939,7 @@ rout.control.redraw = {
             if l > 0 then g:led(s.p_.x, s.p_.y[2] - i + s.p_.y[1], l) end
         end
     end,
-    plane = function(s, g, v)
+    plane = function(s, v, g)
         local cs = s.p_.controlspec
         for i = s.p_.x[1], s.p_.x[2] do
             for j = s.p_.y[1], s.p_.y[2] do
@@ -1051,25 +1051,25 @@ rout.range.input = {
 }
 
 rout.range.redraw = {
-    point = function(s, g, v)
+    point = function(s, v, g)
         local lvl = lvl(s, 1)
         if lvl > 0 then g:led(s.p_.x, s.p_.y, lvl) end
     end,
-    line_x = function(s, g, v)
+    line_x = function(s, v, g)
         for i = 1, s.p_.x[2] - s.p_.x[1] + 1 do
             local l = lvl(s, 0)
             if i >= v[1] and i <= v[2] then l = lvl(s, 1) end
             if l > 0 then g:led(i + s.p_.x[1] - 1, s.p_.y, l) end
         end
     end,
-    line_y = function(s, g, v)
+    line_y = function(s, v, g)
         for i = 1, s.p_.y[2] - s.p_.y[1] + 1 do
             local l = lvl(s, 0)
             if i >= v[1] and i <= v[2] then l = lvl(s, 1) end
             if l > 0 then g:led(s.p_.x, s.p_.y[2] - i + 1, l) end
         end
     end,
-    plane = function(s, g, v)
+    plane = function(s, v, g)
         for i = 1, s.p_.x[2] - s.p_.x[1] + 1 do
             for j = 1, s.p_.y[2] - s.p_.y[1] + 1 do
                 local l = lvl(s, 0)
