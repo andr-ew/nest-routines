@@ -20,6 +20,10 @@ local function txtpoint(txt, a, extents)
             etc[k] = a[k]
         end
     end
+    
+    screen.font_face(etc.font_face)
+    screen.font_size(etc.font_size)
+
 
     local ax = { 'x', 'y' }
     local tsize = { x = screen.text_extents(txt), y = etc.font_size * (1 - etc.font_headroom) }
@@ -71,9 +75,6 @@ local function txtpoint(txt, a, extents)
         end
     end
     
-    screen.font_face(etc.font_face)
-    screen.font_size(etc.font_size)
-
     if not extents then
         if etc.fill > 0 then
             screen.level(etc.fill)
