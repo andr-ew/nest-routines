@@ -722,7 +722,7 @@ rout.number.input = {
             table.insert(s.hlist, i)
            
             if e > 0 then 
-                if (i+m) ~= s.p_.v or (not s.filtersame) then 
+                if (i+m) ~= s.p_.v or (not s.p_.filtersame) then 
                     local len = #s.hlist
                     --s.hlist = {}
                     s:replace('hlist', {})
@@ -744,7 +744,7 @@ rout.number.input = {
                     s:replace('hlist', {})
 
                     if max == nil or len <= max then
-                        if (i+m) ~= s.p_.v or (not s.filtersame) then 
+                        if (i+m) ~= s.p_.v or (not s.p_.filtersame) then 
                             s.vlast = s.p_.v
                             return i+m, util.time() - s.tdown, i - s.vlast-m
                         end
@@ -783,7 +783,7 @@ rout.number.input = {
                 local len = #s.hlist
                 if (
                     not ((i.x+m[1]) == s.p_.v.x and (i.y+m[2]) == s.p_.v.y)
-                    ) or (not s.filtersame) 
+                    ) or (not s.p_.filtersame) 
                 then 
                     --s.hlist = {}
                     s:replace('hlist', {})
@@ -812,7 +812,7 @@ rout.number.input = {
                     if max == nil or len <= max then
                         if (
                             not ((i.x+m[1]) == s.p_.v.x and (i.y+m[2]) == s.p_.v.y)
-                            ) or (not s.filtersame) 
+                            ) or (not s.p_.filtersame) 
                         then 
                             s.vlast.x = s.p_.v.x
                             s.vlast.y = s.p_.v.y
