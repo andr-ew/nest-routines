@@ -456,9 +456,12 @@ end
 
 local txtdraw = function(s, txt) 
     --add scroll modality (based on properties). dump txt into a sublist buffer and scoot members
+
+    local scroll_window = s.p_.scroll_window
+    local scroll_focus = s.p_.scroll_focus
     
-    if type(s.p_.scroll_window) == 'number' then s.scroll_window = { 1, s.scroll_window } end
-    if type(s.p_.scroll_focus) == 'number' then s.scroll_focus = { s.scroll_focus, s.scroll_focus } end
+    if type(s.p_.scroll_window) == 'number' then scroll_window = { 1, scroll_window } end
+    if type(s.p_.scroll_focus) == 'number' then scroll_focus = { scroll_focus, scroll_focus } end
 
     if type(txt) == 'table' then
         local t = txt
@@ -470,13 +473,13 @@ local txtdraw = function(s, txt)
             end 
         end
 
-        local w = s.p_.scroll_window 
+        local w = scroll_window 
         local sel0 = s.p_.selected
         local sel, sel2, sel3
         if w then
             local seltab = type(sel0) == 'table'
             local ax = seltab and sel0.x 
-            local f = s.p_.scroll_focus or { w[1], w[2] }
+            local f = scroll_focus or { w[1], w[2] }
 
             sel = ax and sel0[s.p_.flow] or sel0
             sel = math.floor(sel)
