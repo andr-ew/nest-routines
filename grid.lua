@@ -347,6 +347,9 @@ rout.toggle.input = {
 
                     add = hrem
                     tog(hrem)
+                    
+                    if rem then s.p_.v[rem] = togglelow(s, { s.p_('min', rem), s.p_('max', rem) }, s.p_('include', rem)) end
+
                     for j,w in ipairs(hlist) do tog(w) end
                     
                     s:replace('list', {})
