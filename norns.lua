@@ -103,7 +103,7 @@ local function delta_option_point(self, value, d, wrap_scoot)
     local v = i + ((d > 0 and 1 or -1)*(self.p_.sens or 1))
     local size = #self.p_.options + 1 - (self.p_.sens or 1)
 
-    if self.wrap then
+    if self.p_.wrap then
         while v > size do
             v = v - size + (wrap_scoot and 1 or 0)
         end
@@ -126,7 +126,7 @@ local function delta_option_line(self, value, dx, dy, wrap_scoot)
     vx = i + ((dx > 0 and 1 or -1)*(self.p_.sens or 1))
     vy = j + ((dy > 0 and 1 or -1)*(self.p_.sens or 1))
 
-    if self.wrap then
+    if self.p_.wrap then
         while vy > sizey do
             vy = vy - sizey + (wrap_scoot and 1 or 0)
         end
@@ -138,7 +138,7 @@ local function delta_option_line(self, value, dx, dy, wrap_scoot)
     local cy = util.clamp(vy, 1, sizey)
     local sizex = #self.p_.options[cy] + 1 - self.p_.sens
 
-    if self.wrap then
+    if self.p_.wrap then
         while vx > sizex do
             vx = vx - sizex
         end
@@ -202,7 +202,7 @@ rout.key.option = {
     input = {
         point = function(s, n, z) 
             if z == edge[s.p_.edge] then 
-                s.wrap = true
+                s.p_.wrap = true
                 local v = delta_option_point(s, s.p_.v, s.p_.inc)
                 return v, s.p_.options[v], util.time() - s.tdown, s.p_.inc
             else s.tdown = util.time()
