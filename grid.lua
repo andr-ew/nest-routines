@@ -773,7 +773,6 @@ rout.number.input = {
         local min, max = fingers(s)
         local m = ((s.p_.controlspec and s.p_.controlspec.minval) or s.p_.min or 1) - 1
         m = type(m) ~= 'table' and { m, m } or m
-        for i,v in ipairs(m) do m[i] = v - 1 end
 
         if z > 0 then
             if #s.hlist == 0 then s.tdown = util.time() end
